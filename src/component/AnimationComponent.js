@@ -2,11 +2,12 @@
     'hatchet/core/Component',
     'hatchet/util/Map'
 ], function (Component, Map) {
-    return WinJS.Class.derive(
+    // Animation component class.
+    var AnimationComponent = WinJS.Class.derive(
         Component,
         function (game) {
             /// <summary>Creates a new component.</summary>
-            /// <param name="game" type="CanvasGame">The game that this component belongs to.</param>
+            /// <param name="game" type="Game">The game that this component belongs to.</param>
             Component.call(this, game); // call super constructor
             this.animations = new Map;
             this.state = Component.states.INIT;
@@ -46,4 +47,10 @@
             }
         }
     );
+
+    WinJS.Namespace.define('Hatchet.Component', {
+        AnimationComponent: AnimationComponent
+    });
+
+    return AnimationComponent;
 });

@@ -1,11 +1,12 @@
 ﻿define([
     'hatchet/core/System'
 ], function (System) {
-    return WinJS.Class.derive(
+    // Render system class.
+    var RenderSystem = WinJS.Class.derive(
         System,
         function (game) {
             /// <summary>Creates a new system.</summary>
-            /// <param name="game" type="CanvasGame">The game that this system belongs to.</param>
+            /// <param name="game" type="Game">The game that this system belongs to.</param>
             System.call(this, game); // call super constructor
             this.queue = [];
         }, {
@@ -41,4 +42,10 @@
             }
         }
     );
+    
+    WinJS.Namespace.define('Hatchet.System', {
+        RenderSystem: RenderSystem
+    });
+
+    return RenderSystem;
 });

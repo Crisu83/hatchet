@@ -1,14 +1,13 @@
 ﻿define([
-    'hatchet/input/KeyHandler',
     'hatchet/util/List'
-], function (KeyHandler, List) {
-    return WinJS.Class.define(
+], function (List) {
+    // Game class.
+    var Game = WinJS.Class.define(
         function () {
             /// <summary>Creates a new game.</summary>
             this.systems = new List;
         }, {
             canvas: null,
-            keyboard: null,
             systems: null,
             initialized: false,
             running: false,
@@ -90,7 +89,7 @@
             },
             removeSystem: function (system) {
                 /// <summary>Removes the given system from the game.</summary>
-                /// <param name="system" type="System>The system to remove.</param>
+                /// <param name="system" type="System">The system to remove.</param>
                 /// <returns type="CanvasGame">The current scope.</returns>
                 this.systems.remove(system);
                 return this;
@@ -110,4 +109,10 @@
             }
         }
     );
+    
+    WinJS.Namespace.define('Hatchet.Core', {
+        Game: Game
+    });
+
+    return Game;
 });

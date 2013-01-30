@@ -1,76 +1,87 @@
 ﻿define([
     'hatchet/util/SortedList'
 ], function (SortedList) {
-    return WinJS.Class.define(
-        function (name) {
-            /// <summary>Creates a new entity.</summary>
-            /// <param name="name" type="String">The name for this entity.</param>
-            this.name = name || 'unknown';
-            this.components = new SortedList(function(a, b) {
-                return a.state - b.state;
-            });
-        }, {
-            name: null,
-            components: null,
-            initialized: false,
-            init: function() {
-            },
-            update: function () {
-                /// <summary>Updates the entity and its components.</summary>
-                if (!this.initialized) {
-                    this.init(); // run initialization logic
-                    this.initialized = true;
-                }
-
-                this.components.update(); // sort the components.
-
-                var i, len, component;
-                for (i = 0, len = this.components.size(); i < len; i++) {
-                    component = this.components.get(i);
-                    if (component && component.enabled && typeof component.update === 'function') {
-                        component.update();
+    // Entity class.
+    var Entity = WinJS.Class.mix(
+        WinJS.Class.define(
+            function (name) {
+                /// <summary>Creates a new entity.</summary>
+                /// <param name="name" type="String">The name for this entity.</param>
+                this.name = name || 'unknown';
+                this.components = new SortedList(function(a, b) {
+                    return a.state - b.state;
+                });
+            }, {
+                name: null,
+                components: null,
+                initialized: false,
+                init: function() {
+                },
+                update: function () {
+                    /// <summary>Updates the entity and its components.</summary>
+                    if (!this.initialized) {
+                        this.init(); // run initialization logic
+                        this.initialized = true;
                     }
-                }
-            },
-            addComponent: function (component) {
-                /// <summary>Adds the given component to the entity.</summary>
-                /// <param name="component" type="Component">The component to add.</param>
-                /// <returns type="Entity">The current scope.</returns>
-                component.owner = this;
-                this.components.add(component);
-                return this;
-            },
-            removeComponent: function (component) {
-                /// <summary>Removes the given component from the entity.</summary>
-                /// <param name="component" type="Component">The component to remove.</param>
-                /// <returns type="Entity">The current scope.</returns>
-                this.components.remove(component);
-                return this;
-            },
-            getComponent: function (name) {
-                /// <summary>Returns the component with the given name.</summary>
-                /// <param name="name" type="String">The name of the component.</param>
-                /// <returns type="Component">The component.</returns>
-                var i, len, component;
-                for (i = 0, len = this.components.size(); i < len; i++) {
-                    component = this.components.get(i);
-                    if (component.name === name) {
-                        return component;
+
+                    this.components.update(); // sort the components.
+
+                    var i, len, component;
+                    for (i = 0, len = this.components.size(); i < len; i++) {
+                        component = this.components.get(i);
+                        if (component && component.enabled && typeof component.update === 'function') {
+                            component.update();
+                        }
                     }
-                }
-                return null;
-            },
-            setComponentProperty: function (componentName, propertyName, propertyValue) {
-                /// <summary>Sets the value of the given component property.</summary>
-                /// <param name="componentName" type="String">The name of the component.</param>
-                /// <param name="propertyName" type="String">The name of the property.</param>
-                /// <param name="propertyValue" type="Object">The value of the property.</param>
-                var component = this.getComponent(componentName);
-                if (!component) {
-                    throw new Error('Entity.setComponentProperty: Component not found.');
-                }
-                component[propertyName] = propertyValue;
+                },
+                addComponent: function (component) {
+                    /// <summary>Adds the given component to the entity.</summary>
+                    /// <param name="component" type="Component">The component to add.</param>
+                    /// <returns type="Entity">The current scope.</returns>
+                    component.owner = this;
+                    this.components.add(component);
+                    return this;
+                },
+                removeComponent: function (component) {
+                    /// <summary>Removes the given component from the entity.</summary>
+                    /// <param name="component" type="Component">The component to remove.</param>
+                    /// <returns type="Entity">The current scope.</returns>
+                    this.components.remove(component);
+                    return this;
+                },
+                getComponent: function (name) {
+                    /// <summary>Returns the component with the given name.</summary>
+                    /// <param name="name" type="String">The name of the component.</param>
+                    /// <returns type="Component">The component.</returns>
+                    var i, len, component;
+                    for (i = 0, len = this.components.size(); i < len; i++) {
+                        component = this.components.get(i);
+                        if (component.name === name) {
+                            return component;
+                        }
+                    }
+                    return null;
+                },
+                setComponentProperty: function (componentName, propertyName, propertyValue) {
+                    /// <summary>Sets the value of the given component property.</summary>
+                    /// <param name="componentName" type="String">The name of the component.</param>
+                    /// <param name="propertyName" type="String">The name of the property.</param>
+                    /// <param name="propertyValue" type="Object">The value of the property.</param>
+                    var component = this.getComponent(componentName);
+                    if (!component) {
+                        throw new Error('Entity.setComponentProperty: Component not found.');
+                    }
+                    component[propertyName] = propertyValue;
+                },
+            
             }
-        }
+        ),
+        WinJS.Utilities.eventMixin // Add event dispatcher mixin
     );
+
+    WinJS.Namespace.define('Hatchet.Core', {
+        Entity: Entity
+    });
+
+    return Entity;
 });

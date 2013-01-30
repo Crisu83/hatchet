@@ -1,12 +1,13 @@
 ﻿define([
 
 ], function () {
-    return WinJS.Class.define(
+    // Base component class.
+    var Component = WinJS.Class.define(
         function (game) {
             /// <summary>Creates a new component.</summary>
             /// <param name="game" type="CanvasGame">The game that this component belongs to.</param>
             this.game = game;
-        }, { 
+        }, {
             game: null,
             owner: null,
             state: null,
@@ -32,5 +33,11 @@
                 RENDER: 5
             }
         }
-    )
+    );
+    
+    WinJS.Namespace.define('Hatchet.Core', {
+        Component: Component
+    });
+
+    return Component;
 });

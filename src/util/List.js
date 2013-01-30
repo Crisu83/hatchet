@@ -21,9 +21,7 @@
                 return this;
             },
             remove: function (object) {
-                /// <summary>
-                /// Removes the given object from the list.
-                /// </summary>
+                /// <summary>Removes the given object from the list.</summary>
                 /// <param name="object" type="Object">The object to remove.</param>
                 /// <returns type="Object">The current scope.</returns>
                 var index = this.objects.indexOf(object);

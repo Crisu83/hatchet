@@ -1,8 +1,13 @@
 ﻿define([
 
 ], function () {
-    return WinJS.Class.define(
-        null, {
+    // Image loader class.
+    var ImageLoader = WinJS.Class.define(
+        function () {
+            // Empty constructor.
+        }, {
+            
+            // No member properties.
         }, {
             images: {},
             load: function (url) {
@@ -17,5 +22,11 @@
                 return this.images[url];
             }
         }
-    )
+    );
+    
+    WinJS.Namespace.define('Hatchet.Util', {
+        ImageLoader: ImageLoader
+    });
+
+    return ImageLoader;
 });

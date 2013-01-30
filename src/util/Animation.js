@@ -1,7 +1,8 @@
 ﻿define([
     
 ], function () {
-    return WinJS.Class.define(
+    // Animation class.
+    var Animation = WinJS.Class.define(
         function() {
             /// <summary>Creates a new animation.</summary>
             this.frames = [];
@@ -58,4 +59,10 @@
             }
         }
     );
+    
+    WinJS.Namespace.define('Hatchet.Util', {
+        Animation: Animation
+    });
+
+    return Animation;
 });

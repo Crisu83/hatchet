@@ -1,11 +1,12 @@
 ﻿define([
     'hatchet/core/Component'
 ], function (Component) {
-    return WinJS.Class.derive(
+    // Render component class.
+    var RenderComponent = WinJS.Class.derive(
         Component,
         function (game) {
             /// <summary>Creates a new component.</summary>
-            /// <param name="game" type="CanvasGame">The game that this component belongs to.</param>
+            /// <param name="game" type="Game">The game that this component belongs to.</param>
             Component.call(this, game); // call super constructor
             this.state = Component.states.RENDER;
         }, {
@@ -19,7 +20,6 @@
 
                 if (system && sprite && spatial) {
                     system.add(this.zIndex, function(context) {
-                        console.log(sprite.x);
                         context.drawImage(
                             sprite.image,
                             sprite.x, sprite.y, // image x, y
@@ -32,4 +32,10 @@
             }
         }
     );
+    
+    WinJS.Namespace.define('Hatchet.Component', {
+        RenderComponent: RenderComponent
+    });
+
+    return RenderComponent;
 });
