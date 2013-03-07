@@ -19,18 +19,19 @@
         }, {
             name: 'input',
             keysDown: null,
-            isKeyDown: function (keyCode) {
+            isKeyDown: function (keyCode, release) {
                 /// <summary>Returns whether the given key is pressed.</summary>
                 /// <param name="keyCode" type="Number">The key code.</param>
+                /// /// <param name="release" type="Boolean">Whether the key should be force-released.</param>
                 /// <returns type="Boolean">Whether the key is pressed.</returns>
-                return this.keysDown[keyCode];
+                down = this.keysDown[keyCode];
+                if (release) {
+                    this.keysDown[keyCode] = false;
+                }
+                return down;
             }
         }
     );
     
-    WinJS.Namespace.define('Hatchet.System', {
-        InputSystem: InputSystem
-    });
-
     return InputSystem;
 });

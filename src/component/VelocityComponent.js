@@ -1,33 +1,30 @@
 ﻿define([
-    'hatchet/core/Component'
-], function (Component) {
+    'hatchet/core/Component',
+    'hatchet/util/Vect'
+], function (Component, Vect) {
     // Velocity component class.
-    var VelocityComponent = WinJS.Class.derive(
-        Component,
-        function (game) {
-            /// <summary>Creates a new component.</summary>
-            /// <param name="game" type="Game">The game that this component belongs to.</param>
-            Component.call(this, game); // call super constructor
-            this.state = Component.states.INIT;
-        }, {
-            name: 'velocity',
-            x: 0,
-            y: 0,
-            update: function () {
-                /// <summary>Updates the component.</summary>
-                var spatial = this.getComponent('spatial');
+    var VelocityComponent = WinJS.Class.mix(
+        WinJS.Class.derive(
+            Component,
+            function (game) {
+                /// <summary>Creates a new component.</summary>
+                /// <param name="game" type="Game">The game that this component belongs to.</param>
+                Component.call(this, game); // call super constructor
+                this.state = Component.states.INIT;
+                this.dependencies = ['spatial'];
+            }, {
+                name: 'velocity',
+                update: function () {
+                    /// <summary>Updates the component.</summary>
+                    Component.prototype.update.apply(this);
 
-                if (spatial) {
-                    spatial.x += this.x;
-                    spatial.y += this.y;
+                    this.spatial.x += this.x;
+                    this.spatial.y += this.y;
                 }
             }
-        }
+        ),
+        Vect // Add vector mixin
     );
-    
-    WinJS.Namespace.define('Hatchet.Component', {
-        VelocityComponent: VelocityComponent
-    });
 
     return VelocityComponent;
 });

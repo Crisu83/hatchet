@@ -14,15 +14,20 @@
             canvas: null,
             queue: null,
             dirty: false,
-            add: function (zIndex, fn) {
+            register: function (zIndex, fn) {
                 /// <summary>Adds an item to the queue with the given z-index.</summary>
                 /// <param name="zIndex" type="Number">The rendering priority.</param>
                 /// <param name="fn" type="Function">The rendering callback.</param>
-                this.queue.push({ zIndex: zIndex, fn: fn });
+                this.queue.push({
+                    zIndex: zIndex,
+                    fn: fn
+                });
                 this.dirty = true;
             },
             update: function () {
                 /// <summary>Updates the system.</summary>
+                System.prototype.update.apply(this);
+
                 if (this.dirty) {
                     this.queue.sort(function(a, b) {
                         return a.zIndex - b.zIndex;
@@ -33,8 +38,8 @@
             draw: function (context) {
                 /// <summary>Draws all the items in the queue onto the given context.</summary>
                 /// <param name="context" type="Canvas2dContext">The graphical context.</param>
-                var i, len, item;
-                for (i = 0, len = this.queue.length; i < len; i++) {
+                var item;
+                for (var i = 0, len = this.queue.length; i < len; i++) {
                     item = this.queue[i];
                     item.fn.apply(this, [context]);
                 }
@@ -42,10 +47,6 @@
             }
         }
     );
-    
-    WinJS.Namespace.define('Hatchet.System', {
-        RenderSystem: RenderSystem
-    });
 
     return RenderSystem;
 });

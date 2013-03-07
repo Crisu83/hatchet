@@ -13,14 +13,16 @@
                 /// <summary>Adds the given entity to the group.</summary>
                 /// <param name="object" type="Object">The entity to add.</param>
                 /// <returns type="Object">The current scope.</returns>
-                if (entity instanceof Entity) {
+                if (entity) {
                     this.listen(entity);
                     List.prototype.add.apply(this, [entity]);
                 }
+                return this;
             },
             listen: function (entity) {
                 /// <summary>Starts listening to the entity remove event in order to do gc.</summary>
                 /// <param name="object" type="Entity">The entity to listen to.</param>
+                /// <returns type="Object">The current scope.</returns>
                 var that = this;
                 entity.addEventListener('entity:remove', function (event) {
                     var source = event.detail.source;
@@ -29,6 +31,7 @@
                         that.remove(source);
                     }
                 });
+                return this;
             },
             update: function () {
                 /// <summary>Updates the entities in the group.</summary>
@@ -42,10 +45,6 @@
             }
         }
     );
-    
-    WinJS.Namespace.define('Hatchet.Core', {
-        EntityGroup: EntityGroup
-    });
 
     return EntityGroup;
 });

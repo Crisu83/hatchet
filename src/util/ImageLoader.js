@@ -5,8 +5,7 @@
     var ImageLoader = WinJS.Class.define(
         function () {
             // Empty constructor.
-        }, {
-            
+        }, {  
             // No member properties.
         }, {
             images: {},
@@ -23,10 +22,6 @@
             }
         }
     );
-    
-    WinJS.Namespace.define('Hatchet.Util', {
-        ImageLoader: ImageLoader
-    });
 
     return ImageLoader;
 });

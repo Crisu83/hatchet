@@ -1,7 +1,8 @@
 ﻿define([
-    'hatchet/util/List',
-], function(List) {
-    return WinJS.Class.derive(
+    'hatchet/util/List'
+], function (List) {
+    // Sorted list class.
+    var SortedList = WinJS.Class.derive(
         List,
         function (compare) {
             /// <summary>Creates a new list.</summary>
@@ -34,8 +35,8 @@
                     this.dirty = false;
                 }
             }
-        }, {
-                
         }
     );
+
+    return SortedList;
 });

@@ -11,6 +11,7 @@
             Component.call(this, game); // call super constructor
             this.animations = new Map;
             this.state = Component.states.INIT;
+            this.dependencies = ['sprite'];
         }, {
             name: 'animation',
             animationName: null,
@@ -32,25 +33,31 @@
                 this.animationName = name;
             },
             update: function () {
+                /// <summary>Updates the component.</summary>
+                Component.prototype.update.apply(this);
+
+                if (this.animations.size()) {
+                    this.updateCurrentAnimation();
+                }
+            },
+            updateCurrentAnimation: function () {
+                /// <summary>Updates the current animation.</summary>
                 var animation = this.getCurrentAnimation();
                 if (animation) {
                     animation.update();
-                    var sprite = this.getComponent('sprite');
-                    if (sprite) {
-                        var frame = animation.getCurrentFrame();
-                        if (frame) {
-                            sprite.x = frame.x;
-                            sprite.y = frame.y;
-                        }
-                    }
+                    this.updateAnimationFrame(animation);
                 }
-            }
+            },
+            updateAnimationFrame: function (animation) {
+                /// <summary>Updates the current animation frame.</summary> 
+                var frame = animation.getCurrentFrame();
+                if (frame) {
+                    this.sprite.x = frame.x;
+                    this.sprite.y = frame.y;
+                }
+            },
         }
     );
-
-    WinJS.Namespace.define('Hatchet.Component', {
-        AnimationComponent: AnimationComponent
-    });
 
     return AnimationComponent;
 });

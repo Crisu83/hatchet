@@ -1,35 +1,33 @@
 ﻿define([
+    'hatchet/core/Node',
     'hatchet/util/SortedList'
-], function (SortedList) {
+], function (Node, SortedList) {
     // Entity class.
     var Entity = WinJS.Class.mix(
-        WinJS.Class.define(
+        WinJS.Class.derive(
+            Node,
             function (name) {
                 /// <summary>Creates a new entity.</summary>
                 /// <param name="name" type="String">The name for this entity.</param>
-                this.name = name || 'unknown';
+                Node.call(this, name); // call super constructor
                 this.components = new SortedList(function(a, b) {
                     return a.state - b.state;
                 });
             }, {
-                name: null,
                 components: null,
-                initialized: false,
-                init: function() {
+                removed: false,
+                init: function () {
+                    /// <summary>Initializes the entity.</summary>
+                    this.dispatchEvent('entity:init', { source: this });
                 },
                 update: function () {
                     /// <summary>Updates the entity and its components.</summary>
-                    if (!this.initialized) {
-                        this.init(); // run initialization logic
-                        this.initialized = true;
-                    }
-
-                    this.components.update(); // sort the components.
-
+                    Node.prototype.update.apply(this); // call the parent implementation
+                    this.components.update(); // sort the components
                     var i, len, component;
                     for (i = 0, len = this.components.size(); i < len; i++) {
                         component = this.components.get(i);
-                        if (component && component.enabled && typeof component.update === 'function') {
+                        if (component.enabled && typeof component.update === 'function') {
                             component.update();
                         }
                     }
@@ -62,6 +60,17 @@
                     }
                     return null;
                 },
+                getComponentProperty: function (componentName, propertyName) {
+                    /// <summary>Returns the value of the given component property.</summary>
+                    /// <param name="componentName" type="String">The name of the component.</param>
+                    /// <param name="propertyName" type="String">The name of the property.</param>
+                    /// <returns type="Object">The value.</returns>
+                    var component = this.getComponent(componentName);
+                    if (!component || !component[propertyName]) {
+                        throw new Error('Entity.getComponentProperty: Component not found.');
+                    }
+                    return component[propertyName];
+                },
                 setComponentProperty: function (componentName, propertyName, propertyValue) {
                     /// <summary>Sets the value of the given component property.</summary>
                     /// <param name="componentName" type="String">The name of the component.</param>
@@ -72,16 +81,17 @@
                         throw new Error('Entity.setComponentProperty: Component not found.');
                     }
                     component[propertyName] = propertyValue;
+                    return this;
                 },
-            
+                remove: function () {
+                    /// <summary>Marks the entity as removed.</summary>
+                    this.dispatchEvent('entity:remove', { source: this });
+                    this.removed = true;
+                }
             }
         ),
         WinJS.Utilities.eventMixin // Add event dispatcher mixin
     );
-
-    WinJS.Namespace.define('Hatchet.Core', {
-        Entity: Entity
-    });
 
     return Entity;
 });

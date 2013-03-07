@@ -9,17 +9,31 @@
             /// <param name="game" type="Game">The game that this component belongs to.</param>
             Component.call(this, game); // call super constructor
             this.state = Component.states.RENDER;
+            this.dependencies = ['spatial', 'sprite'];
         }, {
             name: 'render',
             zIndex: 0,
+            visible: true,
+            system: null,
+            init: function () {
+                /// <summary>Initializes the component.</summary>
+                Component.prototype.init.apply(this);
+
+                this.system = this.getSystem('render');
+
+                if (!this.system) {
+                    throw new Error('RenderComponent.init: Cannot initializes component without its system.');
+                }
+            },
             update: function () {
                 /// <summary>Updates the component.</summary>
-                var system = this.getSystem('render'),
-                    spatial = this.getComponent('spatial'),
-                    sprite = this.getComponent('sprite');
+                Component.prototype.update.apply(this);
 
-                if (system && sprite && spatial) {
-                    system.add(this.zIndex, function(context) {
+                if (this.visible) {
+                    var spatial = this.spatial,
+                        sprite = this.sprite;
+
+                    this.system.register(this.zIndex, function (context) {
                         context.drawImage(
                             sprite.image,
                             sprite.x, sprite.y, // image x, y
@@ -32,10 +46,6 @@
             }
         }
     );
-    
-    WinJS.Namespace.define('Hatchet.Component', {
-        RenderComponent: RenderComponent
-    });
 
     return RenderComponent;
 });

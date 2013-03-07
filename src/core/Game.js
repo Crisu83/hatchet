@@ -12,6 +12,7 @@
             initialized: false,
             running: false,
             paused: false,
+            debug: false,
             run: function () {
                 /// <summary>Starts the game loop.</summary>
                 this.canvas = document.getElementById('gameContainer');
@@ -106,13 +107,15 @@
                     }
                 }
                 return null;
+            },
+            width: function () {
+                return this.canvas ? this.canvas.width : 0;
+            },
+            height: function () {
+                return this.canvas ? this.canvas.height : 0;
             }
         }
     );
     
-    WinJS.Namespace.define('Hatchet.Core', {
-        Game: Game
-    });
-
     return Game;
 });

@@ -59,10 +59,6 @@
             }
         }
     );
-    
-    WinJS.Namespace.define('Hatchet.Util', {
-        Animation: Animation
-    });
 
     return Animation;
 });
