@@ -24,10 +24,10 @@
                 /// <param name="object" type="Entity">The entity to listen to.</param>
                 /// <returns type="Object">The current scope.</returns>
                 var that = this;
-                entity.addEventListener('entity:remove', function (event) {
+                entity.addEventListener('entity:destroy', function (event) {
                     var source = event.detail.source;
                     if (source) {
-                        source.removeEventListener('entity:remove', this);
+                        source.removeEventListener('entity:destroy', this);
                         that.remove(source);
                     }
                 });

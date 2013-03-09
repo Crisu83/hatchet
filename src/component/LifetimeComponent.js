@@ -1,8 +1,8 @@
 ﻿define([
     'hatchet/core/Component'
 ], function (Component) {
-    // Cooldown component class.
-    var CooldownComponent = WinJS.Class.derive(
+    // Lifetime component class.
+    var LifetimeComponent = WinJS.Class.derive(
         Component,
         function (game) {
             /// <summary>Creates a new component.</summary>
@@ -10,26 +10,21 @@
             Component.call(this, game); // call super constructor
             this.state = Component.states.LOGIC;
         }, {
-            name: 'cooldown',
-            duration: 1000, // in ms
-            downTime: 0,
+            name: 'lifetime',
+            duration: 0, // in ms
             lastTime: 0,
-            reset: function () {
-                /// <summary>Resets the cooldown.</summary>
-                this.downTime = this.duration;
-            },
             update: function () {
                 /// <summary>Updates the component.</summary>
                 Component.prototype.update.apply(this);
 
-                if (this.downTime > 0) {
+                if (this.duration > 0) {
                     var now = new Date().getTime();
                     if (this.lastTime === 0) {
                         this.lastTime = now;
                     }
-                    this.downTime -= now - this.lastTime;
-                    if (this.downTime <= 0) {
-                        this.downTime = 0;
+                    this.duration -= now - this.lastTime;
+                    if (this.duration <= 0) {
+                        this.sendMessage('destroy');
                     }
                     this.lastTime = now;
                 }
@@ -37,5 +32,5 @@
         }
     );
 
-    return CooldownComponent;
+    return LifetimeComponent;
 });

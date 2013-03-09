@@ -19,6 +19,10 @@
             enabled: true,
             init: function () {
                 /// <summary>Initializes the component.</summary>
+                if (!this.owner) {
+                    throw new Errror('Component.init: Cannot initialize component without an entity.');
+                }
+
                 this.initDependencies();
             },
             initDependencies: function () {
@@ -30,7 +34,7 @@
                         name = this.dependencies[i];
                         dependency = this.getComponent(name);
                         if (!dependency || this[name]) {
-                            throw new Error('Component.initDependencies: Cannot initializes component without dependency.');
+                            throw new Error('Component.initDependencies: Cannot initialize component without dependency.');
                         }
                         this[name] = dependency;
                     }
@@ -40,13 +44,18 @@
                 /// <summary>Returns the system with the given name.</summary>
                 /// <param name="name" type="String">Name of the system.</param>
                 /// <returns type="System">The system.</returns>
-                return this.game ? this.game.getSystem(name) : null;
+                return this.game.getSystem(name);
             },
             getComponent: function (name) {
                 /// <summary>Returns the component with the given name for the entity that this component belongs to.</summary>
                 /// <param name="name" type="String">Name of the component.</param>
                 /// <returns type="Component">The component.</returns>
-                return this.owner ? this.owner.getComponent(name) : null;
+                return this.owner.getComponent(name);
+            },
+            sendMessage: function (msg) {
+                /// <summary>Sends the given message to the entity that this component belongs to.</summary>
+                /// <param name="msg" type="String>The message text.</param>
+                this.owner.broadcastMessage(msg);
             }
         }, {
             // Component states in which they can choose to run.

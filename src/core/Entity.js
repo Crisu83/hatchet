@@ -15,7 +15,6 @@
                 });
             }, {
                 components: null,
-                removed: false,
                 init: function () {
                     /// <summary>Initializes the entity.</summary>
                     this.dispatchEvent('entity:init', { source: this });
@@ -51,8 +50,8 @@
                     /// <summary>Returns the component with the given name.</summary>
                     /// <param name="name" type="String">The name of the component.</param>
                     /// <returns type="Component">The component.</returns>
-                    var i, len, component;
-                    for (i = 0, len = this.components.size(); i < len; i++) {
+                    var component;
+                    for (var i = 0, len = this.components.size(); i < len; i++) {
                         component = this.components.get(i);
                         if (component.name === name) {
                             return component;
@@ -60,33 +59,53 @@
                     }
                     return null;
                 },
-                getComponentProperty: function (componentName, propertyName) {
+                getProperty: function (componentName, name) {
                     /// <summary>Returns the value of the given component property.</summary>
                     /// <param name="componentName" type="String">The name of the component.</param>
-                    /// <param name="propertyName" type="String">The name of the property.</param>
+                    /// <param name="name" type="String">The name of the property.</param>
                     /// <returns type="Object">The value.</returns>
                     var component = this.getComponent(componentName);
-                    if (!component || !component[propertyName]) {
-                        throw new Error('Entity.getComponentProperty: Component not found.');
+                    if (!component) {
+                        throw new Error('Entity.getProperty: Component not found.');
                     }
-                    return component[propertyName];
+                    return component[name];
                 },
-                setComponentProperty: function (componentName, propertyName, propertyValue) {
+                setProperty: function (componentName, name, value) {
                     /// <summary>Sets the value of the given component property.</summary>
                     /// <param name="componentName" type="String">The name of the component.</param>
-                    /// <param name="propertyName" type="String">The name of the property.</param>
-                    /// <param name="propertyValue" type="Object">The value of the property.</param>
+                    /// <param name="name" type="String">The name of the property.</param>
+                    /// <param name="value" type="Object">The value of the property.</param>
                     var component = this.getComponent(componentName);
                     if (!component) {
-                        throw new Error('Entity.setComponentProperty: Component not found.');
+                        throw new Error('Entity.setProperty: Component not found.');
                     }
-                    component[propertyName] = propertyValue;
+                    component[name] = value;
                     return this;
                 },
-                remove: function () {
-                    /// <summary>Marks the entity as removed.</summary>
-                    this.dispatchEvent('entity:remove', { source: this });
-                    this.removed = true;
+                broadcastMessage: function (msg) {
+                    /// <summary>Broadcasts a message to all the components.</summary>
+                    /// <param name="msg" type="String">The message text.</param>
+                    var component;
+                    for (var i = 0, len = this.components.size() ; i < len; i++) {
+                        component = this.components.get(i);
+                        if (component && typeof component.handleMessage === 'function') {
+                            component.handleMessage(msg);
+                        }
+                    }
+                    this.handleMessage(msg);
+                },
+                handleMessage: function (msg) {
+                    /// <summary>Handles the given message if necessary.</summary>
+                    /// <param name="msg" type="String">The message text.</param>
+                    switch (msg) {
+                        case 'destroy':
+                            this.destroy();
+                            break;
+                    }
+                },
+                destroy: function () {
+                    /// <summary>Destroys the entity.</summary> 
+                    this.dispatchEvent('entity:destroy', { source: this });
                 }
             }
         ),

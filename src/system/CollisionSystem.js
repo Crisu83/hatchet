@@ -42,8 +42,8 @@
                             continue;
                         }
                         if (volume.collides(other)) {
-                            volume.fn.apply(this, [volume.entity, other.entity]);
-                            other.fn.apply(this, [other.entity, volume.entity]);
+                            volume.entity.broadcastMessage('collision');
+                            other.entity.broadcastMessage('collision');
                         }
                     }
                 }
