@@ -109,9 +109,13 @@
                 return null;
             },
             width: function () {
+                /// <summary>Returns the width of the game area.</summary>
+                /// <returns type="Number">The width.</returns>
                 return this.canvas ? this.canvas.width : 0;
             },
             height: function () {
+                /// <summary>Returns the height of the game area.</summary>
+                /// <returns type="Number">The height.</returns>
                 return this.canvas ? this.canvas.height : 0;
             }
         }
