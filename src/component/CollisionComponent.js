@@ -1,51 +1,59 @@
 ﻿define([
     'hatchet/core/Component',
-    'hatchet/util/CollisionVolume'
-], function (Component, CollisionVolume) {
+    'hatchet/util/Rect'
+], function (Component, Rect) {
     // Collision component class.
-    var CollisionComponent = WinJS.Class.derive(
-        Component,
-        function (game) {
-            /// <summary>Creates a new component.</summary>
-            /// <param name="game" type="Game">The game that this component belongs to.</param>
-            Component.call(this, game); // call super constructor
-            this.state = Component.states.PHYSICS;
-            this.collidesWith = [];
-            this.dependencies = ['spatial'];
-        }, {
-            name: 'collision',
-            collidesWith: null,
-            system: null,
-            collide: null,
-            init: function () {
-                /// <summary>Initializes the component.</summary>
-                Component.prototype.init.apply(this);
+    var CollisionComponent = WinJS.Class.mix(
+        WinJS.Class.derive(
+            Component,
+            function (game) {
+                /// <summary>Creates a new component.</summary>
+                /// <param name="game" type="Game">The game that this component belongs to.</param>
+                Component.call(this, game); // call super constructor
+                this.state = Component.states.PHYSICS;
+                this.collidesWith = [];
+                this.dependencies = ['spatial'];
+            }, {
+                name: 'collision',
+                collidesWith: null,
+                system: null,
+                collide: null,
+                init: function () {
+                    /// <summary>Initializes the component.</summary>
+                    Component.prototype.init.apply(this);
 
-                this.system = this.getSystem('collision');
+                    this.system = this.getSystem('collision');
 
-                if (!this.system) {
-                    throw new Error('CollisionComponent.init: Cannot initializes component without its system.');
+                    if (!this.system) {
+                        throw new Error('CollisionComponent.init: Cannot initializes component without its system.');
+                    }
+                },
+                update: function () {
+                    /// <summary>Updates the component.</summary>
+                    Component.prototype.update.apply(this);
+
+                    this.x = this.spatial.x;
+                    this.y = this.spatial.y;
+                    this.w = this.spatial.w;
+                    this.h = this.spatial.h;
+
+                    this.system.register(this);
+                },
+                collides: function (other) {
+                    /// <summary>Returns whether the volume collides with the given volume.</summary>
+                    /// <param name="other" type="Object">The other entity.</param>
+                    /// <returns type="Boolean">The result.</returns>
+                    return this.collidesWith.indexOf(other.owner.name) !== -1 && this.intersects(other);
+                },
+                intersects: function (other) {
+                    /// <summary>Returns whether the volume intersects the given volume.</summary>
+                    /// <param name="other">The other collision volume.</param>
+                    /// <returns type="Boolean">The result.</returns>
+                    return !(other.x > this.x2() || other.x2() < this.x || other.y > this.y2() || other.y2() < this.y);
                 }
-            },
-            update: function () {
-                /// <summary>Updates the component.</summary>
-                Component.prototype.update.apply(this);
-
-                var volume = this.createCollisioinVolume();
-                this.system.register(volume);
-            },
-            createCollisioinVolume: function () {
-                var volume = new CollisionVolume;
-                volume.entity = this.owner;
-                volume.collidesWith = this.collidesWith;
-                volume.x = this.spatial.x;
-                volume.y = this.spatial.y;
-                volume.w = this.spatial.w;
-                volume.h = this.spatial.h;
-                volume.fn = this.collide;
-                return volume;
             }
-        }
+        ),
+        Rect // Add rectangle mixin
     );
 
     return CollisionComponent;

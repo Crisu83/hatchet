@@ -24,7 +24,7 @@
                     }
                     this.duration -= now - this.lastTime;
                     if (this.duration <= 0) {
-                        this.sendMessage('destroy');
+                        this.fire('entity:destroy');
                     }
                     this.lastTime = now;
                 }

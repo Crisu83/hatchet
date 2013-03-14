@@ -52,10 +52,18 @@
                 /// <returns type="Component">The component.</returns>
                 return this.owner.getComponent(name);
             },
-            sendMessage: function (msg) {
+            on: function (type, fn) {
+                this.owner.addEventListener(type, fn);
+            },
+            off: function (type, fn) {
+                this.owner.removeEventListener(type, fn);
+            },
+            fire: function (type, data) {
                 /// <summary>Sends the given message to the entity that this component belongs to.</summary>
                 /// <param name="msg" type="String>The message text.</param>
-                this.owner.broadcastMessage(msg);
+                data = data || {};
+                data.source = this.owner;
+                this.owner.dispatchEvent(type, data);
             }
         }, {
             // Component states in which they can choose to run.
